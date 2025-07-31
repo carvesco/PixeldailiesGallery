@@ -13,20 +13,47 @@ body {
   top: 0;
   left: 0;
   outline: none;
+  z-index: 0;
 }
 
-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  padding: 12px 24px;
-  font-size: 16px;
-  background-color: #ffffff;
+.rightButton {
+  position: fixed;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-image: url("/ArrowSlider.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+  border-radius: 25%;
+  width: 150px;
+  height: 65%;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
+  z-index: 1000;
+}
+.rightButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: scaleX(1.05) translateY(-50%);
+}
+.leftButton {
+  position: fixed;
+  left: 5%;
+  top: 50%;
+  transform: scaleX(-1) translateY(-50%);
+  background-image: url("/ArrowSlider.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+  border-radius: 25%;
+  width: 150px;
+  height: 65%;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
 }
 
-button:hover {
-  background-color: #f0f0f0;
+.leftButton:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transform: scaleX(-1.05) translateY(-50%);
 }

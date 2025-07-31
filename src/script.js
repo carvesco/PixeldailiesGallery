@@ -2,8 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import GUI from "lil-gui";
-import { Brush } from "three-bvh-csg";
-import TWEEN from "@tweenjs/tween.js";
 import JEASINGS from "jeasings";
 import cardbackFragmenShader from "./shaders/cardBack/fragment.glsl";
 import cardbackVertexShader from "./shaders/cardBack/vertex.glsl";
@@ -47,12 +45,6 @@ scene.add(helper);
  */
 const mouse = new THREE.Vector2();
 
-window.addEventListener("mousemove", (event) => {
-  // Convert to normalized device coordinates (-1 to +1) for both components
-  mouse.x = (event.clientX / sizes.width) * 2 - 1;
-  mouse.y = (event.clientY / sizes.height) * -2 + 1;
-});
-
 const raycaster = new THREE.Raycaster();
 
 /**
@@ -85,9 +77,6 @@ pixeldailies.forEach((item, index) => {
 });
 console.log("All textures loaded:", pixelDailiesTextures);
 
-const bhsTexture = textureLoader.load(
-  "https://upload.wikimedia.org/wikipedia/en/3/3a/Superunknown.jpg"
-);
 const bhsTextureTwo = textureLoader.load("/pixeldailies/Ammo.jpg");
 console.log(bhsTextureTwo);
 const cardGeometry = new THREE.PlaneGeometry(2, 2);
@@ -148,6 +137,10 @@ const card = (texture) => {
       uTexture: { value: texture },
     },
   });
+  const sideMaterial = new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0.5,
+  });
 
   const uniqueCardBackMaterial = new THREE.ShaderMaterial({
     vertexShader: cardbackVertexShader,
@@ -160,10 +153,10 @@ const card = (texture) => {
   });
 
   const object = new THREE.Mesh(cardGeometryTwo, [
-    null,
-    null,
-    null,
-    null,
+    sideMaterial,
+    sideMaterial,
+    sideMaterial,
+    sideMaterial,
     uniqueCardMaterial,
     uniqueCardBackMaterial,
   ]);
@@ -284,10 +277,51 @@ renderer.setPixelRatio(sizes.pixelRatio);
 /**
  * Animate
  */
+
 const clock = new THREE.Clock();
 var index = 0;
 var isAnimating = false; // Add animation state tracking
-const button = document.getElementById("myButton");
+
+const moveAnimation = (newIndex) => {
+  if (newIndex !== index) {
+    index = newIndex;
+    isAnimating = true; // Set animation state
+
+    const theta = index * 0.475 + Math.PI;
+    const y = -(index * 0.3);
+    const r = 12; // radius
+    const nextPos = new THREE.Vector3();
+    nextPos.setFromCylindricalCoords(r, theta, y);
+    console.log("Animating to position cylindrical(theta,r,z):", theta, r, y);
+
+    new JEASINGS.JEasing(camera.position)
+      .to(
+        {
+          x: nextPos.x,
+          y: nextPos.y,
+          z: nextPos.z,
+        },
+        200
+      )
+      .easing(JEASINGS.Quadratic.Out)
+      .onUpdate(() => {
+        camera.lookAt(0, nextPos.y, 0);
+      })
+      .onComplete(() => {
+        isAnimating = false; // Reset animation state when complete
+      })
+      .start();
+  }
+};
+
+const rightButton = document.getElementsByClassName("rightButton")[0];
+const leftButton = document.getElementsByClassName("leftButton")[0];
+rightButton.addEventListener("click", () => {
+  moveAnimation(index + 1);
+});
+leftButton.addEventListener("click", () => {
+  moveAnimation(index - 1);
+});
 
 addEventListener("wheel", (event) => {
   // Prevent default scrolling behavior
@@ -295,9 +329,6 @@ addEventListener("wheel", (event) => {
 
   // Ignore wheel events if currently animating
   if (isAnimating) return;
-
-  console.log("Wheel event detected!");
-  console.log(event.deltaY);
 
   let newIndex = index;
   if (event.deltaY > 0) {
@@ -318,6 +349,7 @@ addEventListener("wheel", (event) => {
     const r = 12; // radius
     const nextPos = new THREE.Vector3();
     nextPos.setFromCylindricalCoords(r, theta, y);
+    console.log("Animating to position cylindrical(theta,r,z):", theta, r, y);
 
     new JEASINGS.JEasing(camera.position)
       .to(
@@ -350,8 +382,10 @@ const tick = () => {
   });
 
   // Reset all objects to normal scale first
-  /* objects.forEach((object) => {
+  objects.forEach((object) => {
     object.scale.set(1, 1);
+    // Reset cursor to default when not hovering over objects
+    canvas.style.cursor = "default";
   });
 
   raycaster.setFromCamera(mouse, camera);
@@ -359,8 +393,19 @@ const tick = () => {
   if (objectTotest.length) {
     // If the raycaster intersects with an object, scale up the first intersected object
     objectTotest[0].object.scale.set(1.2, 1.2);
+    // Change cursor to pointer when hovering over objects
+    canvas.style.cursor = "pointer";
   }
- */
+  if (index > objects.length - 2) {
+    rightButton.style.display = "none"; // Hide button if at the last index
+  } else {
+    rightButton.style.display = "block"; // Show button if not at the last index
+  }
+  if (index < 1) {
+    leftButton.style.display = "none"; // Hide button if at the first index
+  } else {
+    leftButton.style.display = "block"; // Show button if not at the last index
+  }
   // Update controls
   /* controls.update(); */
 
