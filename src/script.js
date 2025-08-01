@@ -19,11 +19,12 @@ const scene = new THREE.Scene();
 
 // Loaders
 const rgbeLoader = new RGBELoader();
+const basePath = import.meta.env.BASE_URL;
 
 /**
  * Environment map
  */
-rgbeLoader.load("/spruit_sunrise.hdr", (environmentMap) => {
+rgbeLoader.load(`${basePath}spruit_sunrise.hdr`, (environmentMap) => {
   environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
   scene.background = environmentMap;
@@ -50,9 +51,10 @@ const pixeldailies = pixeldailiesData.items; // Assuming your JSON has an "items
 
 // Load all textures from the imported JSON data
 const pixelDailiesTextures = [];
+
 pixeldailies.forEach((item, index) => {
   const texture = textureLoader.load(
-    `/pixeldailies/${item.filename}`, // Assuming the JSON has a filename property
+    `${basePath}pixeldailies/${item.filename}`, // Assuming the JSON has a filename property
     () => {
       /*       console.log(
         `Loaded texture ${index + 1}/${pixeldailies.length}: ${item.filename}`
@@ -67,7 +69,6 @@ pixeldailies.forEach((item, index) => {
 });
 
 const bhsTextureTwo = textureLoader.load("/pixeldailies/Ammo.jpg");
-const cardGeometry = new THREE.PlaneGeometry(2, 2);
 const cardGeometryTwo = new THREE.BoxGeometry(2, 2, 0);
 const cardMaterial = new THREE.ShaderMaterial({
   vertexShader: `
