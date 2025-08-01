@@ -1,7 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
-import GUI from "lil-gui";
 import JEASINGS from "jeasings";
 import cardbackFragmenShader from "./shaders/cardBack/fragment.glsl";
 import cardbackVertexShader from "./shaders/cardBack/vertex.glsl";
@@ -11,7 +9,6 @@ import pixeldailiesData from "./pixeldailiesLit.json"; // Import JSON directly f
  * Base
  */
 // Debug
-const gui = new GUI({ width: 325 });
 const debugObject = {};
 
 // Canvas
@@ -33,12 +30,6 @@ rgbeLoader.load("/spruit_sunrise.hdr", (environmentMap) => {
   scene.backgroundBlurriness = 0.5;
   scene.environment = environmentMap;
 });
-
-/**
- * Helpers
- */
-const helper = new THREE.AxesHelper(5);
-scene.add(helper);
 
 /**
  * Raycaster
@@ -163,16 +154,9 @@ const card = (texture) => {
 
   return object;
 };
-console.log(pixelDailiesTextures.length);
 const objects = [];
 for (let i = 0; i < pixelDailiesTextures.length; i++) {
-  /* let object = new THREE.Mesh(cardGeometry, cardMaterial); */
   const object = card(pixelDailiesTextures[i]);
-  /* object.position.set(
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10
-  ); */
   objects.push(object);
 }
 
@@ -184,8 +168,6 @@ const planeTwo = new THREE.Mesh(cardGeometryTwo, [
   cardMaterial,
   cardMaterial,
 ]);
-
-scene.add(planeTwo);
 
 var vector = new THREE.Vector3();
 
@@ -255,10 +237,6 @@ const y = -(0 * 0.3);
 camera.position.setFromCylindricalCoords(12, theta, y);
 camera.lookAt(0, 0, 0);
 scene.add(camera);
-
-// Controls
-/* const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true; */
 
 /**
  * Renderer
@@ -397,17 +375,15 @@ const tick = () => {
     canvas.style.cursor = "pointer";
   }
   if (index > objects.length - 2) {
-    rightButton.style.display = "none"; // Hide button if at the last index
+    rightButton.style.display = "none";
   } else {
-    rightButton.style.display = "block"; // Show button if not at the last index
+    rightButton.style.display = "block";
   }
   if (index < 1) {
-    leftButton.style.display = "none"; // Hide button if at the first index
+    leftButton.style.display = "none";
   } else {
-    leftButton.style.display = "block"; // Show button if not at the last index
+    leftButton.style.display = "block";
   }
-  // Update controls
-  /* controls.update(); */
 
   JEASINGS.update(); // Update JEASINGS for animations
 
