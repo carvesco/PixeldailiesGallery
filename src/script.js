@@ -47,7 +47,6 @@ const textureLoader = new THREE.TextureLoader();
 
 // Use imported JSON data directly
 const pixeldailies = pixeldailiesData.items; // Assuming your JSON has an "items" property
-console.log("Loaded pixeldailies data:", pixeldailies);
 
 // Load all textures from the imported JSON data
 const pixelDailiesTextures = [];
@@ -55,9 +54,9 @@ pixeldailies.forEach((item, index) => {
   const texture = textureLoader.load(
     `/pixeldailies/${item.filename}`, // Assuming the JSON has a filename property
     () => {
-      console.log(
+      /*       console.log(
         `Loaded texture ${index + 1}/${pixeldailies.length}: ${item.filename}`
-      );
+      ); */
     },
     undefined,
     (error) => {
@@ -66,10 +65,8 @@ pixeldailies.forEach((item, index) => {
   );
   pixelDailiesTextures.push(texture);
 });
-console.log("All textures loaded:", pixelDailiesTextures);
 
 const bhsTextureTwo = textureLoader.load("/pixeldailies/Ammo.jpg");
-console.log(bhsTextureTwo);
 const cardGeometry = new THREE.PlaneGeometry(2, 2);
 const cardGeometryTwo = new THREE.BoxGeometry(2, 2, 0);
 const cardMaterial = new THREE.ShaderMaterial({
@@ -270,7 +267,6 @@ const moveAnimation = (newIndex) => {
     const r = 12; // radius
     const nextPos = new THREE.Vector3();
     nextPos.setFromCylindricalCoords(r, theta, y);
-    console.log("Animating to position cylindrical(theta,r,z):", theta, r, y);
 
     new JEASINGS.JEasing(camera.position)
       .to(
