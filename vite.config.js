@@ -13,7 +13,6 @@ export default {
     outDir: "../dist", // Output in the dist/ folder
     emptyOutDir: true, // Empty the folder first
     sourcemap: true, // Add sourcemap
-    assetsDir: "assets",
   },
   plugins: [
     restart({ restart: ["../static/**"] }), // Restart server on static file change
