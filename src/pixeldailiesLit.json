@@ -1,6 +1,10 @@
 {
   "items": [
     {
+      "title": "Flea",
+      "filename": "Flea.png"
+    },
+    {
       "title": "Wolf",
       "filename": "Wolf.png"
     },
