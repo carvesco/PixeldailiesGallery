@@ -1,6 +1,10 @@
 {
   "items": [
     {
+      "title": "Mascot",
+      "filename": "Mascot.jpg"
+    },
+    {
       "title": "Magnet",
       "filename": "Magnet.jpg"
     },
